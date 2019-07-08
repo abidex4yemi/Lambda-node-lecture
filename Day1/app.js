@@ -2,7 +2,8 @@
  * Module dependencies
  */
 const express = require('express');
-const knex = require(knex);
+const knex = require('knex');
+const bodyParser = require('body-parser');
 
 /**
  * Module constants
@@ -10,6 +11,16 @@ const knex = require(knex);
 const PORT = process.env.PORT || 8000;
 
 const app = express();
+
+/**
+ * Module middleware setup
+ */
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// parse application/json
+app.use(bodyParser.json());
 
 // Handle home route request
 app.get('/', (req, res) => {
