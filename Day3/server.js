@@ -19,4 +19,20 @@ server.get('/', (req, res) => {
     `);
 });
 
+server.get('/error', function(req, res, next) {
+	const error = new Error('SHiiiiiiiittttt');
+	error.status = 400;
+	next(error);
+});
+
+server.all('*', function(req, res, next) {
+	const error = new Error('Ohh!! Something went wrong');
+	error.status = 404;
+	next(error);
+});
+
+server.use(function(err, req, res, next) {
+	return res.status(err.status || 500).json({ message: err.message });
+});
+
 module.exports = server;
