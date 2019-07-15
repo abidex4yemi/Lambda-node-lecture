@@ -35,6 +35,12 @@ const updateUserById = (id, body) => {
 		.then(count => (count > 0 ? getUserById(id) : null));
 };
 
+const deleteUserById = id => {
+	return db('users')
+		.where({ id })
+		.del();
+};
+
 app.get('/', (req, res) => {
 	return res.json('success!');
 });
@@ -90,9 +96,22 @@ app.put('/users/:id', async (req, res, next) => {
 	}
 });
 
-app.use(function errorHandler(err, req, res) {
-	console.error('ERROR:', err);
-	res.status(500).json({
+app.delete('/users/:id', async (req, res, next) => {
+	try {
+		const { id } = req.params;
+
+		await deleteUserById(id);
+
+		return res.status(201).json({
+			message: 'User deleted successfully'
+		});
+	} catch (error) {
+		next(error);
+	}
+});
+
+app.use((err, req, res) => {
+	return res.status(500).json({
 		message: err.message,
 		stack: err.stack
 	});
