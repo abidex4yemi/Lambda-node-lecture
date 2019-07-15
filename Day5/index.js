@@ -28,6 +28,13 @@ const createUser = user => {
 	return db('users').insert(user);
 };
 
+const updateUserById = (id, body) => {
+	return db('users')
+		.where({ id })
+		.update(body)
+		.then(count => (count > 0 ? getUserById(id) : null));
+};
+
 app.get('/', (req, res) => {
 	return res.json('success!');
 });
@@ -67,6 +74,17 @@ app.post('/users', async (req, res, next) => {
 		const newUser = await getUserById(newUserId[0]);
 
 		return res.status(201).json(newUser);
+	} catch (error) {
+		next(error);
+	}
+});
+
+app.put('/users/:id', async (req, res, next) => {
+	try {
+		const { id } = req.params;
+		const updatedUser = await updateUserById(id, req.body);
+
+		return res.status(201).json(updatedUser);
 	} catch (error) {
 		next(error);
 	}
