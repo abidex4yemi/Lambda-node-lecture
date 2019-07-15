@@ -20,7 +20,8 @@ const getUserById = id => {
 	return db
 		.select()
 		.from('users')
-		.where({ id });
+		.where({ id })
+		.first();
 };
 
 const createUser = user => {
@@ -50,9 +51,7 @@ app.get('/users/:id', async (req, res, next) => {
 		if (id) {
 			const user = await getUserById(id);
 
-			return res.status(200).json({
-				user
-			});
+			return res.status(200).json(user);
 		}
 
 		return next(new Error('User id is invalid'));
@@ -67,7 +66,7 @@ app.post('/users', async (req, res, next) => {
 
 		const newUser = await getUserById(newUserId[0]);
 
-		return res.status(201).json(newUser[0]);
+		return res.status(201).json(newUser);
 	} catch (error) {
 		next(error);
 	}
