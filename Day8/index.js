@@ -21,11 +21,18 @@ function getStudentsWithCourses() {
 
 function getEmptyCourses() {}
 
-function getLazyStudents() {}
+function getLazyStudents() {
+	return db
+		.select('*')
+		.from('users')
+		.leftJoin('enrollments', 'users.id', 'enrollments.user_id')
+		.leftJoin('courses', 'courses.id', 'enrollments.course_id')
+		.where('enrollments.id', null);
+}
 
 app.get('/bench', async (req, res, next) => {
 	try {
-		const result = await getStudentsWithCourses();
+		const result = await getLazyStudents();
 		res.json(result);
 	} catch (error) {
 		next(error);
