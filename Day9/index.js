@@ -16,37 +16,37 @@ server.get('/', (req, res) => {
 });
 
 server.post('/api/register', (req, res) => {
-  let user = req.body;
+  const user = req.body;
 
   Users.add(user)
-    .then(saved => {
+    .then((saved) => {
       res.status(201).json(saved);
     })
-    .catch(error => {
+    .catch((error) => {
       res.status(500).json(error);
     });
 });
 
 server.post('/api/login', (req, res) => {
-  let { username, password } = req.body;
+  const { username, password } = req.body;
 
   Users.findBy({ username })
     .first()
-    .then(user => {
+    .then((user) => {
       if (user) {
         res.status(200).json({ message: `Welcome ${user.username}!` });
       } else {
         res.status(401).json({ message: 'Invalid Credentials' });
       }
     })
-    .catch(error => {
+    .catch((error) => {
       res.status(500).json(error);
     });
 });
 
 server.get('/api/users', (req, res) => {
   Users.find()
-    .then(users => {
+    .then((users) => {
       res.json(users);
     })
     .catch(err => res.send(err));
