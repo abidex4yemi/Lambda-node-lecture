@@ -4,6 +4,19 @@ const jwt = require('jsonwebtoken');
 
 const Users = require('../users/users-model.js');
 
+function generateToken(user) {
+	const payload = {
+		sub: user.id,
+		username: user.username
+	};
+
+	const options = {
+		expiresIn: '1d'
+	};
+
+	return jwt.sign(payload, '47667475&&&*', options);
+}
+
 // for endpoints beginning with /api/auth
 router.post('/register', (req, res) => {
 	let user = req.body;
@@ -27,6 +40,7 @@ router.post('/login', (req, res) => {
 		.then(user => {
 			if (user && bcrypt.compareSync(password, user.password)) {
 				const token = generateToken(user);
+
 				res.status(200).json({
 					message: `Welcome ${user.username}!`,
 					token
@@ -39,18 +53,5 @@ router.post('/login', (req, res) => {
 			res.status(500).json(error);
 		});
 });
-
-const generateToken = user => {
-	const payload = {
-		sub: user.id,
-		username: user.username
-	};
-
-	const options = {
-		expiresIn: '1d'
-	};
-
-	return jwt.sign(payload, options);
-};
 
 module.exports = router;
